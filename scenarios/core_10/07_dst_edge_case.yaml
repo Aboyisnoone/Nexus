@@ -1,0 +1,21 @@
+scenario_id: "core_07_dst_edge_case"
+description: >
+  Construct a scenario around a real IANA timezone DST transition.
+  E.g. Sunday Nov 3, 2024 US Eastern Time. 1:00 AM repeats.
+simulated_time: "2024-11-03T05:00:00Z" # 1:00 AM EST (Fall back)
+initial_state:
+  calendar: []
+  memory: []
+events:
+  - actor: "client"
+    intent: "request_meeting"
+    payload:
+      scheduling_constraints:
+        window_start: "2024-11-03T05:00:00Z"
+        window_end: "2024-11-03T07:00:00Z"
+        duration: "PT1H"
+        granularity: "PT1H"
+expected_evaluation:
+  assertions:
+    - type: action_type_equals
+      expected: "PROPOSE_TIMES"

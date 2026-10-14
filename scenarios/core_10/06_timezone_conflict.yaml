@@ -1,0 +1,26 @@
+scenario_id: "core_06_timezone_conflict"
+description: >
+  The user and simulated external participant operate in different timezones.
+simulated_time: "2024-11-01T14:00:00Z" # 9 AM EST
+initial_state:
+  calendar:
+    - id: "evt_1"
+      title: "Blocked in Tokyo"
+      start: "2024-11-01T00:00:00Z"
+      end: "2024-11-01T10:00:00Z"
+      visibility: "PUBLIC"
+  memory: []
+events:
+  - actor: "client"
+    intent: "request_meeting"
+    payload:
+      text: "Can we meet between 10am and 2pm Tokyo time?"
+      scheduling_constraints:
+        window_start: "2024-11-01T01:00:00Z"
+        window_end: "2024-11-01T05:00:00Z"
+        duration: "PT1H"
+        granularity: "PT1H"
+expected_evaluation:
+  assertions:
+    - type: action_type_equals
+      expected: "DECLINE"

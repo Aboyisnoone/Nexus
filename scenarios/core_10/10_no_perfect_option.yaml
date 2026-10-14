@@ -1,0 +1,32 @@
+scenario_id: "core_10_no_perfect_option"
+description: >
+  Every candidate satisfies hard constraints. Each candidate has different soft-preference tradeoffs.
+simulated_time: "2024-11-01T09:00:00Z"
+initial_state:
+  calendar:
+    - id: "evt_1"
+      title: "Focus Time"
+      start: "2024-11-01T10:00:00Z"
+      end: "2024-11-01T12:00:00Z"
+      visibility: "PUBLIC"
+  memory:
+    - id: "mem_1"
+      context_id: "user_1"
+      key: "preferred_meeting_times"
+      value: "mornings"
+      state: "CONFIRMED"
+      simulated_time: "2024-10-01T09:00:00Z"
+      evidence: []
+events:
+  - actor: "client"
+    intent: "request_meeting"
+    payload:
+      scheduling_constraints:
+        window_start: "2024-11-01T09:00:00Z"
+        window_end: "2024-11-01T17:00:00Z"
+        duration: "PT1H"
+        granularity: "PT1H"
+expected_evaluation:
+  assertions:
+    - type: action_type_equals
+      expected: "PROPOSE_TIMES"

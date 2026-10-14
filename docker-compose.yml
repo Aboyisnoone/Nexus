@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: nexus
+      POSTGRES_PASSWORD: nexus_password
+      POSTGRES_DB: nexus_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    command: uvicorn nexus.api.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./src:/app/src
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://nexus:nexus_password@db:5432/nexus_db
+
+volumes:
+  postgres_data:

@@ -1,0 +1,35 @@
+scenario_id: "core_08_stale_memory"
+description: >
+  CONFIRMED memory conflicts with recent OBSERVED evidence.
+  CONFIRMED memory remains authoritative until post-run.
+simulated_time: "2024-11-01T09:00:00Z"
+initial_state:
+  calendar: []
+  memory:
+    - id: "mem_1"
+      context_id: "user_1"
+      key: "preferred_meeting_times"
+      value: "mornings"
+      state: "CONFIRMED"
+      simulated_time: "2024-10-01T09:00:00Z"
+      evidence: []
+    - id: "mem_2"
+      context_id: "user_1"
+      key: "preferred_meeting_times"
+      value: "afternoons"
+      state: "OBSERVED"
+      simulated_time: "2024-11-01T08:00:00Z"
+      evidence: []
+events:
+  - actor: "client"
+    intent: "request_meeting"
+    payload:
+      scheduling_constraints:
+        window_start: "2024-11-01T09:00:00Z"
+        window_end: "2024-11-01T17:00:00Z"
+        duration: "PT1H"
+        granularity: "PT1H"
+expected_evaluation:
+  assertions:
+    - type: action_type_equals
+      expected: "PROPOSE_TIMES"
