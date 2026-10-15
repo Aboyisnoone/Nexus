@@ -13,20 +13,20 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y libpq-dev gcc && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
-COPY pyproject.toml .
-RUN pip install --no-cache-dir -e ".[dev]"
-
-# Copy source code and scenarios
+# Copy full application code first so package dependencies and src/ exist
 COPY . .
+
+# Install Python dependencies and nexus package
+RUN pip install --no-cache-dir -e ".[dev]"
 
 # Copy built frontend assets
 COPY --from=frontend-builder /app/frontend/dist /app/frontend/dist
 
-# Expose port
-EXPOSE 8000
-
+# Expose port and configure PYTHONPATH
+ENV PYTHONPATH=/app/src:$PYTHONPATH
 ENV PORT=8000
 ENV HOST=0.0.0.0
+
+EXPOSE 8000
 
 CMD ["sh", "-c", "alembic upgrade head && python ingest_db.py && uvicorn nexus.api.main:app --host 0.0.0.0 --port ${PORT}"]

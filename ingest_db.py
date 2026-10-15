@@ -1,5 +1,10 @@
 import os
+import sys
 import yaml
+
+# Ensure src is in python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from nexus.core.persistence.repository import NexusRepository
